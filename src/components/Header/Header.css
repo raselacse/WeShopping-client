@@ -1,0 +1,9 @@
+.login{
+    background-color: green;
+    border-radius: 5px;
+    color: white !important;
+}
+.photoURL{
+    width: 20px;
+    border-radius: 12px;
+}
