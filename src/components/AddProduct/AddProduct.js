@@ -41,7 +41,7 @@ const AddProduct = () => {
     const handleSubmit = (e) => {
         e.preventDefault()
         const newProduct = Object.assign(data, image);
-        fetch('http://localhost:27017/add-products', {
+        fetch('https://still-chamber-88739.herokuapp.com/add-products', {
             method: 'POST',
             body: JSON.stringify(newProduct),
             headers: {
@@ -76,7 +76,7 @@ const AddProduct = () => {
                     <div>
                         <h4 className="my-3">Add Product</h4>
 
-                        <Form className="py-4"  noValidate validated={validated} onSubmit={handleValidation}>
+                        <Form className="py-4"  noValidate validated={validated} onSubmit={handleValidation} >
                             <Form.Row>
                                 <Form.Group as={Col} hasValidation>
                                     <Form.Label>Product Category</Form.Label>

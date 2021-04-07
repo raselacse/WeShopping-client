@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Nav, Button, Jumbotron, Table, Image } from 'react-bootstrap';
+import { Nav, Button, Jumbotron, Table, Image, Spinner } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import manage from '../../icon/grid 1.png'
 import add from '../../icon/plus 1.png'
@@ -7,16 +7,18 @@ import edit from '../../icon/edit 1.png'
 
 const ManageProduct = () => {
     const [products, setProducts] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        fetch('http://localhost:27017/manage-products')
+        fetch('https://still-chamber-88739.herokuapp.com/manage-products')
             .then(res => res.json())
             .then(data => {
                 setProducts(data)
+                setLoading(false)
             })
     }, [])
     const deleteProduct = (e, id) => {
-        fetch('http://localhost:27017/delete/' + id, {
+        fetch('https://still-chamber-88739.herokuapp.com/delete/' + id, {
             method: "DELETE",
             headers: {
                 'Content-type': 'application/json; charset=UTF-8',
@@ -30,7 +32,7 @@ const ManageProduct = () => {
             })
     }
     return (
-        <>
+        <>{loading ? <div className="text-center"><Spinner animation="border" /></div> :
             <div className="row py-4">
                 <div className="col-lg-2 aside">
                     <div>
@@ -62,7 +64,7 @@ const ManageProduct = () => {
                         </Table>
                     </Jumbotron>
                 </div>
-            </div>
+            </div>}
         </>
     );
 };

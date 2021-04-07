@@ -1,33 +1,32 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Jumbotron, Button, Table } from 'react-bootstrap';
+import { Jumbotron, Button, Table, Spinner } from 'react-bootstrap';
 import { useParams } from 'react-router';
 import { Link } from 'react-router-dom';
 import { UserContext } from '../../App';
-import fakeData from '../../fakeData';
 
 const Checkout = () => {
     const [loggedInUser, setLoggedInUser] = useContext(UserContext)
     const { key } = useParams()
     const [products, setProducts] = useState([]);
-    useEffect(()=>{
-        fetch('http://localhost:27017/products')
-        .then(res => res.json())
-        .then(data => {
-            setProducts(data)
-        })
-    },[])
-    
-    const product = fakeData.find(pd => pd.key === key)    
-    const { title, category, price, image } = product;
-    const productDetails = {title, category, price, image}
-
+    const [loading, setLoading] = useState(true);
     const [selectedDate, setSelectedDate] = useState({
         date: new Date()
     });
 
+    useEffect(()=>{
+        fetch('https://still-chamber-88739.herokuapp.com/products')
+        .then(res => res.json())
+        .then(data => {
+            setProducts(data)
+            setLoading(false)
+        })
+    },[])
+
+    const product = products.find(pd => pd.key === key)
+    
     const handleOrder = () => {
-        const order = { ...loggedInUser, ...productDetails, ...selectedDate};
-        fetch('http://localhost:27017/orders', {
+        const order = { ...loggedInUser, ...product, ...selectedDate};
+        fetch('https://still-chamber-88739.herokuapp.com/orders', {
             method: 'POST',
             body: JSON.stringify(order),
             headers: {
@@ -39,7 +38,7 @@ const Checkout = () => {
     }
     
     return (
-        <>
+        <>{loading ? <div className="text-center"><Spinner animation="border" /></div> :
             <Jumbotron className="mt-5 py-4">
                 <h4 className="py-2">Checkout</h4>
                 <Table responsive>
@@ -52,21 +51,21 @@ const Checkout = () => {
                     </thead>
                     <tbody>
                         <tr>
-                            <td>{title}</td>
+                            <td>{product.title}</td>
                             <td>{1}</td>
-                            <td>${price}</td>
+                            <td>${product.price}</td>
                         </tr>
                         <tr>
                             <td>Total</td>
                             <td></td>
-                            <td>${price}</td>
+                            <td>${product.price}</td>
                         </tr>
                     </tbody>
                 </Table>
                 <p className="f-right">
                     <Button onClick={handleOrder} as={Link} to="/orders" variant="primary">Order Now</Button>
                 </p>
-            </Jumbotron>
+            </Jumbotron>}
         </>
     );
 };
